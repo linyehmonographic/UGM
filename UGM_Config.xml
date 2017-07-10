@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UGM_Configuration>
+  <Contextual_Objects>
+    <Static_Objects>
+      <Object_Name>piece-2-0</Object_Name>
+    </Static_Objects>
+    <Trace_By_Tag_Name>
+      <Tag>UTE_Tag</Tag>
+    </Trace_By_Tag_Name>
+    
+    <Contextual_Objects_Attribute>
+      <Enabled>true</Enabled>
+    </Contextual_Objects_Attribute>
+
+    <Contextual_Objects_Events>
+      <Enabled>true</Enabled>
+    </Contextual_Objects_Events>
+  </Contextual_Objects>
+
+  <User_Event>
+    <Callback_Function>
+      <Enabled>true</Enabled>
+    </Callback_Function>
+    <Touch>
+      <Enabled>true</Enabled>
+    </Touch>
+  </User_Event>
+
+  <Log>
+    <Moving_Standard_Distance>10</Moving_Standard_Distance>
+    <Enabled>true</Enabled>
+  </Log>
+</UGM_Configuration>
