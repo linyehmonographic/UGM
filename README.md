@@ -7,7 +7,7 @@ Unity Game Monitor is a monitor on Unity for recording user's behaviors and envi
 <p>
 Environment:<br>
 &nbsp;&nbsp;Unity 5.6<br>
-&nbsp;Windows 10<br>
+&nbsp;&nbsp;Windows 10<br>
 </p>
 <p>
 How to use UGM:<br>
