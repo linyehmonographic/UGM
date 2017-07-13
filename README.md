@@ -1,6 +1,6 @@
 # UGM
 <p>Unity Game Monitor</p>
-
+<p>rev 0.1</p>
 <p>
 Unity Game Monitor is a monitor on Unity for recording user's behaviors and environment attributes.If you want to improve your game quality in develop period,you can use UGM to get information when you testing your game.
 </p>
