@@ -1,6 +1,6 @@
 # UGM
 <p>Unity Game Monitor</p>
-<p>rev 0.1</p>
+<p>rev 0.2</p>
 <p>
 Unity Game Monitor is a monitor on Unity for recording user's behaviors and environment attributes.If you want to improve your game quality in develop period,you can use UGM to get information when you testing your game.
 </p>
@@ -23,8 +23,10 @@ How to use UGM:<br>
 </ol>
 </p>
 <p>Log and Video Replay<br>
+<ol>
 <li>input Log file in UGM.html</li>
-<li>play the video and Log will replay in the same time<li>
+<li>play the video and Log will replay in the same time</li>
+</ol>
 </p>
 <p>
 Log file path: Application.persistenceDataPath 
