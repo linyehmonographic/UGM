@@ -17,7 +17,7 @@ How to use UGM:<br>
 <li>Drag UGM prefab in scene.</li>
 <li>Open UGM_config.xml and you can use objectname or tag to setup which object you want to trace.</li>
 <li>Build your game Apk and install in your mobile</li>
-<li>Connect adb and excute UGM.bat on windows(Warning:you have to put UGM_LogWriter.cpp in the same folder)</li>
+<li>Connect adb and excute UGM.bat on windows(Warning:you have to compile UGM_LogWriter.cpp and put it in the same folder)</li>
 <li>Start your game and playing it on your mobile.</li>
 <li>Finally you will get two files, one is Log file, the other is record video file</li>
 </ol>
