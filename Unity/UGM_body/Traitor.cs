@@ -11,6 +11,10 @@ public class Traitor : EventTrigger
     {
         return gameObject.name;
     }
+    public string getTag()
+    {
+        return gameObject.tag;
+    }
 
     public Vector3 getPosition()
     {
@@ -20,7 +24,7 @@ public class Traitor : EventTrigger
 
     private void send_message(string e)
     {
-        controller.touch_logger.Log_EventTrigger(gameObject.name, e);
+        controller.touch_logger.Log_EventTrigger(gameObject.name, gameObject.tag, e);
     }
 
     public override void OnBeginDrag(PointerEventData data)
@@ -107,4 +111,17 @@ public class Traitor : EventTrigger
     {
         send_message("OnUpdateSelected");
     }
+
+    void OnCollisionEnter(Collision collision) { send_message("OnCollisionEnter"); }
+    void OnCollisionEnter2D(Collision2D coll) { send_message("OnCollisionEnter2D"); }
+    void OnCollisionExit(Collision collisionInfo) { send_message("OnCollisionExit"); }
+    void OnCollisionExit2D(Collision2D coll) { send_message("OnCollisionExit2D"); }
+    //void OnCollisionStay(Collision collisionInfo) { send_message("OnCollisionStay"); }
+    //void OnCollisionStay2D(Collision2D coll) { send_message("OnCollisionStay2D"); }
+    void OnTriggerEnter(Collider other) { send_message("OnTriggerEnter"); }
+    void OnTriggerEnter2D(Collider2D other) { send_message("OnTriggerEnter2D"); }
+    void OnTriggerExit(Collider other) { send_message("OnTriggerExit"); }
+    void OnTriggerExit2D(Collider2D other) { send_message("OnTriggerExit2D"); }
+    //void OnTriggerStay(Collider other) { send_message("OnTriggerStay"); }
+    //void OnTriggerStay2D(Collider2D other) { send_message("OnTriggerStay2D"); }
 }

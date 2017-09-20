@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        var logvideo;
+        var logtxt;
+        var SceneName;
+        var Date;
+		var VideoTimeDifference=0;
+		var DifferenceTime;
+		var VideoTime;
+		var RatioState=false;
+		
+		var videoInterval;
+        var currentIndex = 0;
+        var rededIndex = 0;
+		
+		var logtxtArr;
+        var logArrTime = [];
+		
+        window.addEventListener("load", function() {
+            logvideo = document.getElementById("logvideo");
+            logtxt = document.getElementById("logtxt");
+            SceneName = document.getElementById("scene");
+            Date = document.getElementById("date");
+			DifferenceTime = document.getElementById("DifferenceTime");
+			VideoTime = document.getElementById("VideoTime");
+        }, false);
+        
+
+		
+		
+		
+        function LogFileChange(e) {
+			currentIndex=0;
+			rededIndex=0;
+			logtxtArr=[];
+			logArrTime=[];
+            logvideo.src = "UGM/" + e.files[0].name.substr(0, e.files[0].name.length - 4) + ".mp4";
+            getSceneName(e.files[0].name);
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                logtxtArr = e.target.result.split("\n");
+                logtxtArr.shift();
+                logtxtArr.pop();
+                parseLog();
+            };
+            reader.readAsText(e.files[0]);
+        };
+        var divArr;
+
+        function parseLog() {
+            for (var i = 0; i < logtxtArr.length; ++i) {
+                var start = logtxtArr[i].indexOf("UGM") + 4;
+                var end = logtxtArr[i].indexOf(" ", start);
+                var timeStr = logtxtArr[i].substr(start, end - start);
+                var timeSplit = timeStr.split(":");
+                var time_second = parseFloat(timeSplit[0]) * 3600 + parseFloat(timeSplit[1]) * 60 + parseFloat(timeSplit[2]);
+                logArrTime.push(time_second);
+            }
+			logArrTime.push(1000000);
+            var logdiv = "";
+            for (var i = 0; i < logtxtArr.length; ++i) {
+                logdiv += "<div onclick=\"ChangeLogVideo(this)\">" + logtxtArr[i] + "</div>";
+            }
+            logtxt.innerHTML = logdiv;
+            divArr = logtxt.getElementsByTagName("div");
+        }
+        
+
+        function videoPlaying() {
+			VideoTime.innerHTML=logvideo.currentTime;
+            for (var i = currentIndex; i < logArrTime.length; ++i) {
+                if (logArrTime[i] > logvideo.currentTime+VideoTimeDifference) {
+                    if (i != currentIndex) {
+                        rededIndex = currentIndex;
+                        currentIndex = i;
+                        for (var j = rededIndex; j < currentIndex; ++j) {
+                            divArr[j].style.color = "red";
+                        }
+                        logtxt.scrollTop = rededIndex * 20;
+                    }
+                    break;
+                }
+            }
+        }
+
+        function videoSeeking() {
+			VideoTime.innerHTML=logvideo.currentTime;
+            for (var i = 0; i < logArrTime.length; ++i) {
+
+                if (logArrTime[i] > logvideo.currentTime+VideoTimeDifference) {
+                    if (i != currentIndex) {
+
+                        currentIndex = i;
+                        for (var j = 0; j < currentIndex; ++j) {
+                            divArr[j].style.color = "red";
+                        }
+                        logtxt.scrollTop = i * 20;
+                    }
+                    break;
+                }
+            }
+            for (var i = currentIndex; i < logArrTime.length; ++i) {
+                divArr[i].style.color = "black";
+            }
+        }
+
+        function getSceneName(name) {
+            var str = name.split('_');
+			str[2]=str[2].replace(/-/g,"/");
+			str[3]=str[3].replace(/-/g,":");
+            Date.innerHTML = str[2] + " " + str[3];
+            SceneName.innerHTML = str[4].substr(0, str[4].length - 4);
+
+        }
+		
+		function VideoTimeChange(e)
+		{
+			VideoTimeDifference=parseFloat(e.value);
+			DifferenceTime.innerHTML=e.value;
+		}
+		
+		function ChangeLogVideo(e)
+		{
+			for(var i=0;i<logtxtArr.length;++i)
+			{
+				divArr[i].style.backgroundColor="white";
+			}
+			
+			var log = e.innerHTML;
+			var start = log.indexOf("UGM") + 4;
+			var end = log.indexOf(" ", start);
+			var timeStr = log.substr(start, end - start);
+			var timeSplit = timeStr.split(":");
+			var time_second = parseFloat(timeSplit[0]) * 3600 + parseFloat(timeSplit[1]) * 60 + parseFloat(timeSplit[2]);
+			logvideo.currentTime = time_second;
+			var contextual_event=e.innerHTML.split(" ");
+			if(contextual_event[2]=="Contextual_Event(")
+			{
+				var GameObjectName=contextual_event[4].substr(0,contextual_event[8].length-1);
+				var CallbackFunction=contextual_event[6];
+				for(var i=0;i<logtxtArr.length;++i)
+				{
+					var str=logtxtArr[i].split(" ");
+					if(RatioState==false&&contextual_event[4]==str[4]&&contextual_event[8]==str[8])
+					{
+						divArr[i].style.backgroundColor="yellow";
+					}
+					else if(RatioState==true&&contextual_event[6]==str[6]&&contextual_event[8]==str[8])
+					{
+						divArr[i].style.backgroundColor="yellow";
+					}
+				}
+			}
+			var contextual_attr=e.innerHTML.split(" ");
+			if(contextual_attr[2]=="Contextual_Attr(")
+			{
+				var GameObjectName=contextual_attr[6].substr(0,contextual_attr[6].length-1);
+				console.log(GameObjectName);
+				for(var i=0;i<logtxtArr.length;++i)
+				{
+					var str=logtxtArr[i].split(" ");
+					if(RatioState==false&&contextual_attr[6]==str[6]&&contextual_attr[2]==str[2])
+					{
+						divArr[i].style.backgroundColor="yellow";
+					}
+					else if(RatioState==true&&contextual_attr[8]==str[8]&&contextual_attr[2]==str[2])
+					{
+						divArr[i].style.backgroundColor="yellow";
+					}
+				}
+			}
+			
+		}
+		function RatioClickName()
+		{
+			RatioState=false;
+			for(var i=0;i<logtxtArr.length;++i)
+			{
+				divArr[i].style.backgroundColor="white";
+			}
+		}
+		function RatioClickTag()
+		{
+			RatioState=true;
+			for(var i=0;i<logtxtArr.length;++i)
+			{
+				divArr[i].style.backgroundColor="white";
+			}
+		}
+    </script>
+    <style>
+		body
+		{
+			background-color:#009FB7;
+		}
+        #logtxt>div {
+            height: 20px;
+            font-size: 15px;
+        }
+		.InfoDiv > table{
+			width: 100%;
+		}
+        .InfoDiv > table td{
+			width: 50%;
+			color:black;
+		}
+		.InfoDiv{
+			border-style: solid;
+			border-radius:5px;
+			background-color:#E6E6EA;
+            font-size: 25px;
+			padding: 5px;
+		}
+		.videoAndLog{
+			border-style: solid;
+			border-radius:5px;
+			margin-top:20px;
+			background-color:#F4F4F8;
+		}
+		ul, ol{
+			margin: 0px;
+		}
+    </style>
+</head>
+
+<body>
+	<div class="InfoDiv" style="margin-bottom: 5px;">
+		How to:<br>
+		<ol>
+			<li>Place text log files to the same directory (./), and video files to "UGM" directory(./UGM/).</li>
+			<li>Select a text log file to "LogFile" input below. Then You will see the video on the left and log on the right.</li>
+		</ol>
+		You can:<br>
+		<ul>
+			<li>Log will scroll with video time when video playing.</li>
+			<li>Video will jump to corresponding log time when user click a log.</li>
+			<li>Adjust "Difference" below to shorten the differences between video and log.</li>
+			<li>When user click a Contextual_Attr log, mark backgrounds of logs of same GameObject's name or tag to yellow, following by "Contextual_Attr search by" below.</li>
+			<li>When user click a Contextual_Event log, mark backgrounds of logs of same GameObject's name to yellow.</li>
+		</ul>
+	</div>
+    <div class="InfoDiv">
+        <table>
+            <tr>
+                <td title="Scene name of this log.">Scene:&nbsp;<span id="scene"></span></td>
+				<td title="Select one text log file to input.">LogFile:<input type="file" id="logfile" onchange="LogFileChange(this)"></td>
+            </tr>
+			<tr>
+				<td title="Date of this log.">Date:&nbsp;<span id="date"></span></td>
+                <td title="This can adjust time differences between log and video.">Difference:&nbsp;0<input type="range" id="videoTimeBar" min="0" max="1" step="0.1" value="0" oninput="VideoTimeChange(this)">1&nbsp;,&nbsp;value:&nbsp;<span id="DifferenceTime">0</span></td>
+			</tr>
+			<tr>
+				<td title="Time of video.">Video&nbsp;Time:&nbsp;<span id="VideoTime">0</span></td>
+				<td title="When user click a Contextual_Attr log, mark backgrounds of logs of same GameObject's name or tag to yellow.">
+					Contextual_Attr search by:
+					<label><input type="radio" name="gender" onclick="RatioClickName();" value="SearchbyName" checked="true">Name</label>
+					<label><input type="radio" name="gender" onclick="RatioClickTag();" value="SearchbyTag">Tag</label>
+				</td>
+			</tr>
+        </table>
+    </div>
+    <div id="VideoLogDiv" style="width: 100%;">
+		<div style="width: 43%; float: left;">
+			<video id="logvideo" style="width: 100%;" class="videoAndLog" controls onplay="videoInterval = setInterval(videoPlaying, 100); currentIndex = rededIndex = 0;" onpause="clearInterval(videoInterval);" onseeking="videoSeeking()"></video>
+        </div>
+		<div id="logtxt" class="videoAndLog" style="width: 55%; height: 600px; overflow: auto; float: right; white-space: pre;"></div>
+    </div>
+
+</body>
+
+</html>

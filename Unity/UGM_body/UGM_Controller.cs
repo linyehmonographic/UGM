@@ -6,10 +6,11 @@ public class UGM_Controller : MonoBehaviour {
     public GameObject EventSystem_prefab;
     public Touch_Logger touch_logger;
     public List<Traitor> objects_has_traitor;
-
+ 
     // Use this for initialization
-    void Start () {
-        XML_Parser parser = new XML_Parser();
+    void Start ()
+    {
+        XML_Parser parser = new XML_Parser(); 
         parser.Start_Parse();
 
         for(int i = 0; i < Configuration.Contextual_Objects.Static_Objects.Count; ++i)
@@ -27,12 +28,13 @@ public class UGM_Controller : MonoBehaviour {
                 GameObject[] gos = GameObject.FindGameObjectsWithTag(Configuration.Contextual_Objects.Trace_By_Tag_Name[i]);
                 for (int j = 0; j < gos.Length; ++j)
                 {
-                    objects_has_traitor.Add(gos[i].AddComponent<Traitor>());
+                    objects_has_traitor.Add(gos[j].AddComponent<Traitor>());
                 }
             }
             catch (UnityException e)
             {
                 Debug.Log("UGM_Error: Tag '" + Configuration.Contextual_Objects.Trace_By_Tag_Name[i] + "' is not defined.");
+                Debug.Log(e.ToString());
             }
         }
         for(int i = 0; i < objects_has_traitor.Count; ++i)

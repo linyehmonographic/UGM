@@ -2,10 +2,10 @@
 <UGM_Configuration>
   <Contextual_Objects>
     <Static_Objects>
-      <Object_Name>piece-2-0</Object_Name>
+      <Object_Name>ball</Object_Name>
     </Static_Objects>
     <Trace_By_Tag_Name>
-      <Tag>UTE_Tag</Tag>
+		<Tag>UGM_Tag</Tag>
     </Trace_By_Tag_Name>
     
     <Contextual_Objects_Attribute>

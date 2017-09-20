@@ -1,12 +1,22 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Xml;
 
-public class XML_Parser {
+public class XML_Parser{
+    
     public void Start_Parse()
     {
-        XmlReader xmlReader = XmlReader.Create(Application.dataPath + "/Unity_Game_Monitor/UGM_Config.xml");
         XmlDocument xmlDocument = new XmlDocument();
-        xmlDocument.Load(xmlReader);
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            TextAsset textAsset = (TextAsset)Resources.Load("UGM_Config", typeof(TextAsset));
+            xmlDocument.LoadXml(textAsset.text);
+        }
+        else
+        {
+            XmlReader xmlReader = XmlReader.Create(Application.dataPath + "/Unity_Game_Monitor/Resources/UGM_Config.xml");
+            xmlDocument.Load(xmlReader);
+        }
         foreach (XmlNode Configurations in xmlDocument["UGM_Configuration"].ChildNodes)
         {
             if (Configurations.Name == "Contextual_Objects")

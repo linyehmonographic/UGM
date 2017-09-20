@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class Touch_Logger : MonoBehaviour {
     public UGM_Controller controller;
@@ -17,7 +18,8 @@ public class Touch_Logger : MonoBehaviour {
     Log_Writer logWriter;
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
         logWriter = new Log_Writer(Application.persistentDataPath);
 
         if (!EventSystem.current)
@@ -34,8 +36,10 @@ public class Touch_Logger : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		Debug.Log(1/Time.deltaTime);
+	void Update ()
+    {
+        AddTraitorByTag();
+
         if (Camera.current != currentCamera)
         {
             if (Camera.current)
@@ -72,7 +76,7 @@ public class Touch_Logger : MonoBehaviour {
                                 log += ", GameObject_Name[" + r + "]: " + results[r].gameObject.name;
                             }
                         }
-                        logWriter.Log(log);
+                        logWriter.UserEvent_Log(log);
                         beginTouchPositions[fingerId] = touches[fingerId].position;
 
                         Log_Active(fingerId);
@@ -103,7 +107,7 @@ public class Touch_Logger : MonoBehaviour {
                     */
                     else if (touches[fingerId].phase == TouchPhase.Canceled)
                     {
-                        logWriter.Log("FingerId: " + touches[i].fingerId + ", Type: User_Event, TouchPhase: Canceled");
+                        logWriter.UserEvent_Log("FingerId: " + touches[i].fingerId + ", Type: User_Event, TouchPhase: Canceled");
                     }
                     
                     lastPhase[fingerId] = touches[fingerId].phase;
@@ -111,7 +115,7 @@ public class Touch_Logger : MonoBehaviour {
 
                 if (isMoving[fingerId])
                 {
-                    logWriter.Log("FingerId: " + touches[fingerId].fingerId + ", Type: User_Event, TouchPhase: Moved, x: " + touches[fingerId].position.x + ", y: " + touches[fingerId].position.y);
+                    logWriter.UserEvent_Log("FingerId: " + touches[fingerId].fingerId + ", Type: User_Event, TouchPhase: Moved, x: " + touches[fingerId].position.x + ", y: " + touches[fingerId].position.y);
                     Log_Active(fingerId);
                 }
             }
@@ -119,7 +123,7 @@ public class Touch_Logger : MonoBehaviour {
             {
                 if(touches[i].fingerId != -1 && touches[i].phase == TouchPhase.Ended)
                 {
-                    logWriter.Log("FingerId: " + touches[i].fingerId + ", Type: User_Event, TouchPhase: Ended, x:" + touches[i].position.x + ", y: " + touches[i].position.y);
+                    logWriter.UserEvent_Log("FingerId: " + touches[i].fingerId + ", Type: User_Event, TouchPhase: Ended, x:" + touches[i].position.x + ", y: " + touches[i].position.y);
                     lastPhase[i] = TouchPhase.Ended;
                     touches[i].fingerId = -1;
                     isMoving[i] = false;
@@ -132,7 +136,7 @@ public class Touch_Logger : MonoBehaviour {
             {
                 if (lastPhase[i] != TouchPhase.Ended)
                 {
-                    logWriter.Log("FingerId: " + touches[i].fingerId + ", Type: User_Event, TouchPhase: Ended, x:" + touches[i].position.x + ", y: " + touches[i].position.y);
+                    logWriter.UserEvent_Log("FingerId: " + touches[i].fingerId + ", Type: User_Event, TouchPhase: Ended, x:" + touches[i].position.x + ", y: " + touches[i].position.y);
                     lastPhase[i] = TouchPhase.Ended;
                 }
                 touches[i].fingerId = -1;
@@ -141,6 +145,30 @@ public class Touch_Logger : MonoBehaviour {
         }
 	}
 
+    static int delta = 0;
+
+    private void AddTraitorByTag()
+    {
+        if (delta % 30 == 0)
+        {
+            for (int i = 0; i < Configuration.Contextual_Objects.Trace_By_Tag_Name.Count; ++i)
+            {
+                GameObject[] array = GameObject.FindGameObjectsWithTag(Configuration.Contextual_Objects.Trace_By_Tag_Name[i]);
+                for (int j = 0; j < array.Length; j++)
+                {
+                    if (!array[j].GetComponent<Traitor>())
+                    {
+                        Traitor t = array[j].AddComponent<Traitor>();
+                        t.controller = controller;
+                        controller.objects_has_traitor.Add(t);
+                    }
+                }
+            }
+            delta = 0;
+        }
+        delta++;
+    }
+
     private void Log_Active(int fingerId)
     {
         for (int t = 0; t < controller.objects_has_traitor.Count; ++t)
@@ -148,13 +176,19 @@ public class Touch_Logger : MonoBehaviour {
             if (controller.objects_has_traitor[t])
             {
                 Vector3 pos = controller.objects_has_traitor[t].getPosition();
-                logWriter.Contextual_Log("FingerId: " + fingerId + ", GameObject_Name: " + controller.objects_has_traitor[t].getName() + ", Position: " + pos.x + "," + pos.y + "," + pos.z);
+                logWriter.Contextual_Attribute("FingerId: " + fingerId + ", GameObject_Name: " + controller.objects_has_traitor[t].getName() + ", Tag_Name: " + controller.objects_has_traitor[t].getTag() + ", Position: " + pos.x + "," + pos.y + "," + pos.z);
+            }
+            else
+            {
+                controller.objects_has_traitor.RemoveAt(t);
+                --t;
+                continue;
             }
         }
     }
 
-    public void Log_EventTrigger(string name, string e)
+    public void Log_EventTrigger(string name, string tag, string e)
     {
-        logWriter.Contextual_Log("GameObject_Name: " + name + ", CallbackFunction: " + e + " called");
+        logWriter.Contextual_Event("GameObject_Name: " + name + ", Tag_Name: " + tag + ", CallbackFunction: " + e + " called");
     }
 }
