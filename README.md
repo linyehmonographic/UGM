@@ -29,6 +29,9 @@ How to use UGM:<br>
 </ol>
 </p>
 <p>
+  <a href="https://www.youtube.com/watch?v=4n4xhkdIqZ0&t=41s" target="_blank">Tutorial Video</a>
+</p>
+<p>
 Log file path: Application.persistenceDataPath 
 </p>
 <p>
