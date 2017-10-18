@@ -32,5 +32,5 @@ How to use UGM:<br>
 Log file path: Application.persistenceDataPath 
 </p>
 <p>
-Demo video:&nbsp;<a href="https://www.youtube.com/watch?v=4n4xhkdIqZ0" target="_blank">Tutorial Video</a>
+Demo video:&nbsp;<a href="https://www.youtube.com/watch?v=Y_xdlff3ZlE" target="_blank">Tutorial Video</a>
 </p>
